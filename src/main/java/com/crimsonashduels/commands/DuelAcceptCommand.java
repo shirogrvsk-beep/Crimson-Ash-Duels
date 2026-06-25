@@ -2,6 +2,7 @@ package com.crimsonashduels.commands;
 
 import com.crimsonashduels.Arena;
 import com.crimsonashduels.DuelManager;
+import com.crimsonashduels.Match;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -40,6 +41,9 @@ public class DuelAcceptCommand implements CommandExecutor {
 
         Arena arena = Arena.defaultArena();
         arena.teleportPlayers(challenger, target);
+
+        // Start the match
+        Match match = new Match(challenger, target);
 
         duelManager.removeRequest(challenger);
 
