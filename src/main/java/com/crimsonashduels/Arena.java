@@ -25,7 +25,7 @@ public class Arena {
         if (world == null) {
             throw new IllegalStateException("World 'world' not found!");
         }
-        // Example coordinates — change to your arena’s actual locations
+        // Change these coordinates to your actual arena
         return new Arena(world, 100, 65, 100, 110, 65, 100);
     }
 }
