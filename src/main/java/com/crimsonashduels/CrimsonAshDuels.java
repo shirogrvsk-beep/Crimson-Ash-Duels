@@ -7,6 +7,8 @@ import com.crimsonashduels.commands.QueueCommand;
 import com.crimsonashduels.commands.StatsCommand;
 import com.crimsonashduels.commands.TopWinsCommand;
 import com.crimsonashduels.commands.TopDuelsCommand;
+import com.crimsonashduels.commands.TopWinsGUICommand;
+import com.crimsonashduels.commands.TopDuelsGUICommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -49,6 +51,8 @@ public class CrimsonAshDuels extends JavaPlugin {
         getCommand("stats").setExecutor(new StatsCommand(this));
         getCommand("topwins").setExecutor(new TopWinsCommand(this));
         getCommand("topduels").setExecutor(new TopDuelsCommand(this));
+        getCommand("topwinsgui").setExecutor(new TopWinsGUICommand(this));
+        getCommand("topduelsgui").setExecutor(new TopDuelsGUICommand(this));
 
         // Register events
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
