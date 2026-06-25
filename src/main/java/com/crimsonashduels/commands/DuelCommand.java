@@ -1,5 +1,6 @@
 package com.crimsonashduels.commands;
 
+import com.crimsonashduels.DuelManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -7,6 +8,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class DuelCommand implements CommandExecutor {
+
+    private final DuelManager duelManager;
+
+    public DuelCommand(DuelManager duelManager) {
+        this.duelManager = duelManager;
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -28,10 +35,11 @@ public class DuelCommand implements CommandExecutor {
             return true;
         }
 
+        duelManager.sendRequest(challenger, target);
+
         challenger.sendMessage("You challenged " + target.getName() + " to a duel!");
         target.sendMessage(challenger.getName() + " has challenged you to a duel! Type /duelaccept to fight.");
 
-        // TODO: Add DuelManager to track requests
         return true;
     }
 }
