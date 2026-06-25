@@ -2,6 +2,7 @@ package com.crimsonashduels.listeners;
 
 import com.crimsonashduels.CrimsonAshDuels;
 import com.crimsonashduels.KitManager;
+import com.crimsonashduels.gui.KitPreviewGUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,7 +25,7 @@ public class KitSelectorListener implements Listener {
         Player player = (Player) event.getWhoClicked();
 
         if (event.getView().getTitle().startsWith("Select Kit vs ")) {
-            event.setCancelled(true); // prevent taking items
+            event.setCancelled(true);
 
             ItemStack clicked = event.getCurrentItem();
             if (clicked == null || !clicked.hasItemMeta()) return;
@@ -34,10 +35,9 @@ public class KitSelectorListener implements Listener {
 
             if (displayName.startsWith("Kit: ")) {
                 String kitName = displayName.replace("Kit: ", "");
-                // Send duel request with chosen kit
-                plugin.getDuelManager().sendDuelRequest(player, targetName, kitName);
-                player.closeInventory();
-                player.sendMessage("§aDuel request sent to " + targetName + " with kit " + kitName + ".");
+                // Open preview GUI instead of sending request immediately
+                KitPreviewGUI preview = new KitPreviewGUI(plugin, kitManager);
+                preview.openPreview(player, kitName, targetName);
             } else if (displayName.equalsIgnoreCase("Use Own Inventory")) {
                 plugin.getDuelManager().sendDuelRequest(player, targetName, "own");
                 player.closeInventory();
