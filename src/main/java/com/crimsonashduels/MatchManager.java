@@ -1,7 +1,6 @@
 package com.crimsonashduels;
 
 import org.bukkit.entity.Player;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,8 +13,11 @@ public class MatchManager {
         this.plugin = plugin;
     }
 
-    public void startMatch(Player p1, Player p2) {
-        Match match = new Match(p1, p2);
+    public void startMatch(Player p1, Player p2, Arena arena) {
+        // Restore arena before duel begins
+        plugin.getArenaResetManager().restoreArena(arena.getName(), arena.getPasteLocation());
+
+        Match match = new Match(p1, p2, arena);
         activeMatches.put(p1, match);
         activeMatches.put(p2, match);
     }
@@ -38,11 +40,8 @@ public class MatchManager {
         // Update ELO ratings
         plugin.getEloManager().updateElo(winner, loser);
 
-        // Reset arena after duel using FAWE
-        plugin.getArenaResetManager().restoreArena(
-                match.getArena().getName(),
-                match.getArena().getPasteLocation()
-        );
+        // Reset arena after duel
+        plugin.getArenaResetManager().restoreArena(match.getArena().getName(), match.getArena().getPasteLocation());
 
         activeMatches.remove(match.getPlayer1());
         activeMatches.remove(match.getPlayer2());
