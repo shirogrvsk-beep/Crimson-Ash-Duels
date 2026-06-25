@@ -14,7 +14,7 @@ public class RestoreArenaCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        sender.sendMessage("Arena restore not yet implemented.");
+        sender.sendMessage("Arena restore not implemented yet.");
         return true;
     }
 }
