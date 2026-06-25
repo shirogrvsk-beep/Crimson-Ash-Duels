@@ -17,6 +17,7 @@ public class CrimsonAshDuels extends JavaPlugin {
     private StatsManager statsManager;
     private EloManager eloManager;
     private ArenaResetManager arenaResetManager;
+    private KitManager kitManager;
     private Map<String, Arena> arenas = new HashMap<>();
 
     @Override
@@ -28,14 +29,15 @@ public class CrimsonAshDuels extends JavaPlugin {
 
         duelManager = new DuelManager();
         matchManager = new MatchManager(this);
-        cooldownManager = new CooldownManager(30);
+        cooldownManager = new CooldownManager(getConfig().getInt("duel-request-cooldown", 30));
         spectatorManager = new SpectatorManager();
         queueManager = new QueueManager(matchManager, this);
         statsManager = new StatsManager(this);
         eloManager = new EloManager(this);
         arenaResetManager = new ArenaResetManager(this);
+        kitManager = new KitManager(this);
 
-        // Register commands
+        // Register duel-related commands
         getCommand("duel").setExecutor(new DuelCommand(duelManager, cooldownManager));
         getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager, matchManager, this));
         getCommand("spectate").setExecutor(new SpectateCommand(spectatorManager));
@@ -48,6 +50,8 @@ public class CrimsonAshDuels extends JavaPlugin {
         getCommand("elo").setExecutor(new EloCommand(this));
         getCommand("topelo").setExecutor(new TopEloCommand(this));
         getCommand("topelogui").setExecutor(new TopEloGUICommand(this));
+
+        // Season reset
         getCommand("resetseason").setExecutor((sender, command, label, args) -> {
             if (!sender.hasPermission("crimsonashduels.admin")) {
                 sender.sendMessage("§cYou do not have permission to reset the season.");
@@ -58,6 +62,8 @@ public class CrimsonAshDuels extends JavaPlugin {
             sender.sendMessage("§6Season has been reset! All stats and ELO cleared.");
             return true;
         });
+
+        // Arena commands
         getCommand("savearena").setExecutor(new SaveArenaCommand(this));
         getCommand("restorearena").setExecutor(new RestoreArenaCommand(this));
         getCommand("rotatearenas").setExecutor((sender, command, label, args) -> {
@@ -69,6 +75,9 @@ public class CrimsonAshDuels extends JavaPlugin {
             sender.sendMessage("§6Arena rotation triggered.");
             return true;
         });
+
+        // Kit system root command
+        getCommand("crimson").setExecutor(new CrimsonCommand(this, kitManager));
 
         // Register events
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
@@ -124,6 +133,10 @@ public class CrimsonAshDuels extends JavaPlugin {
 
     public ArenaResetManager getArenaResetManager() {
         return arenaResetManager;
+    }
+
+    public KitManager getKitManager() {
+        return kitManager;
     }
 
     @Override
