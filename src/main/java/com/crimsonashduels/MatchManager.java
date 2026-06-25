@@ -1,29 +1,50 @@
-package com.crimsonashduels.commands;
+package com.crimsonashduels;
 
-import com.crimsonashduels.CrimsonAshDuels;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class EloCommand implements CommandExecutor {
+import java.util.HashMap;
+import java.util.Map;
 
+public class MatchManager {
+
+    private final Map<Player, Match> activeMatches = new HashMap<>();
     private final CrimsonAshDuels plugin;
 
-    public EloCommand(CrimsonAshDuels plugin) {
+    public MatchManager(CrimsonAshDuels plugin) {
         this.plugin = plugin;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("Only players can view ELO ratings.");
-            return true;
-        }
+    public void startMatch(Player p1, Player p2) {
+        Match match = new Match(p1, p2);
+        activeMatches.put(p1, match);
+        activeMatches.put(p2, match);
+    }
 
-        Player player = (Player) sender;
-        int elo = plugin.getEloManager().getElo(player);
-        player.sendMessage("§6Your current ELO rating: §e" + elo);
-        return true;
+    public boolean isInMatch(Player player) {
+        return activeMatches.containsKey(player);
+    }
+
+    public Match getMatch(Player player) {
+        return activeMatches.get(player);
+    }
+
+    public void endMatch(Match match, Player winner, Player loser) {
+        match.endMatch(winner, loser);
+
+        // Record stats
+        plugin.getStatsManager().recordWin(winner);
+        plugin.getStatsManager().recordLoss(loser);
+
+        // Update ELO ratings
+        plugin.getEloManager().updateElo(winner, loser);
+
+        // Reset arena after duel using FAWE
+        plugin.getArenaResetManager().restoreArena(
+                match.getArena().getName(),
+                match.getArena().getPasteLocation()
+        );
+
+        activeMatches.remove(match.getPlayer1());
+        activeMatches.remove(match.getPlayer2());
     }
 }
