@@ -57,3 +57,7 @@ commands:
     description: Manually trigger arena rotation and reset
     usage: /rotatearenas
     permission: crimsonashduels.admin
+  crimson:
+    description: Root command for CrimsonAshDuels admin tools (kits)
+    usage: /crimson kit <create|editor> <name>
+    permission: crimsonashduels.admin
