@@ -32,3 +32,6 @@ commands:
   topduelsgui:
     description: Open GUI leaderboard for duels
     usage: /topduelsgui
+  elo:
+    description: View your current ELO rating
+    usage: /elo
