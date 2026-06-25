@@ -25,7 +25,7 @@ public class CrimsonAshDuels extends JavaPlugin {
         matchManager = new MatchManager();
 
         getCommand("duel").setExecutor(new DuelCommand(duelManager));
-        getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager, matchManager));
+        getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager, matchManager, this));
 
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
     }
