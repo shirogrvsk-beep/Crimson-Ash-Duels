@@ -2,16 +2,24 @@ package com.crimsonashduels;
 
 import com.crimsonashduels.commands.DuelCommand;
 import com.crimsonashduels.commands.DuelAcceptCommand;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CrimsonAshDuels extends JavaPlugin {
 
     private DuelManager duelManager;
     private MatchManager matchManager;
+    private Map<String, Arena> arenas = new HashMap<>();
 
     @Override
     public void onEnable() {
         getLogger().info("Crimson Ash Duels enabled!");
+
+        saveDefaultConfig();
+        loadArenas();
 
         duelManager = new DuelManager();
         matchManager = new MatchManager();
@@ -20,6 +28,21 @@ public class CrimsonAshDuels extends JavaPlugin {
         getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager, matchManager));
 
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
+    }
+
+    private void loadArenas() {
+        ConfigurationSection section = getConfig().getConfigurationSection("arenas");
+        if (section != null) {
+            for (String key : section.getKeys(false)) {
+                Arena arena = Arena.fromConfig(section.getConfigurationSection(key));
+                arenas.put(key, arena);
+                getLogger().info("Loaded arena: " + key);
+            }
+        }
+    }
+
+    public Arena getArena(String name) {
+        return arenas.get(name);
     }
 
     @Override
