@@ -1,63 +1,42 @@
 # CrimsonAshDuels Configuration
+# Generated automatically on first run. Customize as needed.
 
-# Interval in minutes for automatic arena rotation/reset
-# Example: 60 = every hour, 1440 = once per day
-arena-rotation-interval-minutes: 60
-
-# Rotation mode for arenas
-# Options: sequential, random
-rotation-mode: sequential
-
-# Default cooldown (seconds) between duel requests
+# Cooldown (in seconds) between sending duel requests
 duel-request-cooldown: 30
 
-# Arenas configuration
-# Each arena must define:
-# - world: The world name
-# - spawn1: First player spawn location (x,y,z)
-# - spawn2: Second player spawn location (x,y,z)
-# - pasteLocation: Where the schematic should be pasted/reset
+# Interval (in minutes) for automatic arena rotation/reset
+arena-rotation-interval-minutes: 60
+
+# Arena definitions
 arenas:
-  default:
-    world: Crimson
-    spawn1:
-      x: 100
-      y: 65
-      z: 100
-    spawn2:
-      x: 110
-      y: 65
-      z: 100
-    pasteLocation:
-      x: 100
-      y: 65
-      z: 100
+  arena1:
+    world: world
+    corner1: 100,64,100
+    corner2: 120,80,120
+    pasteLocation: 110,65,110
+  arena2:
+    world: world_nether
+    corner1: -50,64,-50
+    corner2: -30,80,-30
+    pasteLocation: -40,65,-40
+  arena3:
+    world: world_the_end
+    corner1: 200,70,200
+    corner2: 220,85,220
+    pasteLocation: 210,72,210
 
-  secondarena:
-    world: Crimson
-    spawn1:
-      x: 200
-      y: 70
-      z: 200
-    spawn2:
-      x: 210
-      y: 70
-      z: 200
-    pasteLocation:
-      x: 200
-      y: 70
-      z: 200
-
-# ELO system defaults
+# Stats/ELO settings
 elo:
   default: 1000
-  k-factor: 32
+  win_increment: 25
+  loss_decrement: 15
 
-# Messages customization
-messages:
-  duel-request: "&eYou have challenged &b{player} &eto a duel!"
-  duel-accepted: "&a{player} accepted your duel request!"
-  duel-denied: "&c{player} denied your duel request."
-  duel-win: "&aYou won the duel against &b{player}&a!"
-  duel-loss: "&cYou lost the duel against &b{player}&c!"
-  arena-reset: "&6Arena {arena} has been reset."
+# Spectator settings
+spectator:
+  allowSpectators: true
+  teleportOnJoin: true
+
+# Queue system
+queue:
+  enabled: true
+  maxPlayers: 100
