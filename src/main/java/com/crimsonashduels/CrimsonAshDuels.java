@@ -1,7 +1,6 @@
 package com.crimsonashduels;
 
 import com.crimsonashduels.commands.*;
-import com.crimsonashduels.gui.KitSelectorGUI;
 import com.crimsonashduels.listeners.KitSelectorListener;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,8 +38,8 @@ public class CrimsonAshDuels extends JavaPlugin {
         arenaResetManager = new ArenaResetManager(this);
         kitManager = new KitManager(this);
 
-        // Register duel-related commands
-        getCommand("duel").setExecutor(new DuelCommand(this)); // now opens kit selector
+        // Register commands
+        getCommand("duel").setExecutor(new DuelCommand(this)); // opens kit selector GUI
         getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager, matchManager, this));
         getCommand("spectate").setExecutor(new SpectateCommand(spectatorManager));
         getCommand("queue").setExecutor(new QueueCommand(queueManager));
@@ -52,8 +51,6 @@ public class CrimsonAshDuels extends JavaPlugin {
         getCommand("elo").setExecutor(new EloCommand(this));
         getCommand("topelo").setExecutor(new TopEloCommand(this));
         getCommand("topelogui").setExecutor(new TopEloGUICommand(this));
-
-        // Season reset
         getCommand("resetseason").setExecutor((sender, command, label, args) -> {
             if (!sender.hasPermission("crimsonashduels.admin")) {
                 sender.sendMessage("§cYou do not have permission to reset the season.");
@@ -64,8 +61,6 @@ public class CrimsonAshDuels extends JavaPlugin {
             sender.sendMessage("§6Season has been reset! All stats and ELO cleared.");
             return true;
         });
-
-        // Arena commands
         getCommand("savearena").setExecutor(new SaveArenaCommand(this));
         getCommand("restorearena").setExecutor(new RestoreArenaCommand(this));
         getCommand("rotatearenas").setExecutor((sender, command, label, args) -> {
@@ -77,9 +72,7 @@ public class CrimsonAshDuels extends JavaPlugin {
             sender.sendMessage("§6Arena rotation triggered.");
             return true;
         });
-
-        // Kit system root command
-        getCommand("crimson").setExecutor(new CrimsonCommand(this, kitManager));
+        getCommand("crimson").setExecutor(new CrimsonCommand(this, kitManager)); // admin kit commands
 
         // Register events
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
@@ -140,6 +133,14 @@ public class CrimsonAshDuels extends JavaPlugin {
 
     public KitManager getKitManager() {
         return kitManager;
+    }
+
+    public MatchManager getMatchManager() {
+        return matchManager;
+    }
+
+    public DuelManager getDuelManager() {
+        return duelManager;
     }
 
     @Override
