@@ -51,6 +51,18 @@ public class CrimsonAshDuels extends JavaPlugin {
         getCommand("topelo").setExecutor(new TopEloCommand(this));
         getCommand("topelogui").setExecutor(new TopEloGUICommand(this));
 
+        // Season reset command
+        getCommand("resetseason").setExecutor((sender, command, label, args) -> {
+            if (!sender.hasPermission("crimsonashduels.admin")) {
+                sender.sendMessage("§cYou do not have permission to reset the season.");
+                return true;
+            }
+            statsManager.resetSeason();
+            eloManager.resetSeason();
+            sender.sendMessage("§6Season has been reset! All stats and ELO cleared.");
+            return true;
+        });
+
         // Register events
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
     }
@@ -70,22 +82,3 @@ public class CrimsonAshDuels extends JavaPlugin {
         return arenas.get(name);
     }
 
-    public List<String> getArenaNames() {
-        return new ArrayList<>(arenas.keySet());
-    }
-
-    public StatsManager getStatsManager() {
-        return statsManager;
-    }
-
-    public EloManager getEloManager() {
-        return eloManager;
-    }
-
-    @Override
-    public void onDisable() {
-        statsManager.saveStats();
-        eloManager.saveElo();
-        getLogger().info("Crimson Ash Duels disabled!");
-    }
-}
