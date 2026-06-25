@@ -7,10 +7,10 @@ import org.bukkit.entity.Player;
 
 public class DuelListener implements Listener {
 
-    private final DuelManager duelManager;
+    private final MatchManager matchManager;
 
-    public DuelListener(DuelManager duelManager) {
-        this.duelManager = duelManager;
+    public DuelListener(MatchManager matchManager) {
+        this.matchManager = matchManager;
     }
 
     @EventHandler
@@ -18,10 +18,9 @@ public class DuelListener implements Listener {
         Player loser = event.getEntity();
         Player killer = loser.getKiller();
 
-        if (killer != null) {
-            // End the match when one player kills the other
-            Match match = new Match(killer, loser);
-            match.endMatch(killer, loser);
+        if (killer != null && matchManager.isInMatch(loser)) {
+            Match match = matchManager.getMatch(loser);
+            matchManager.endMatch(match, killer, loser);
         }
     }
 }
