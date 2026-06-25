@@ -21,11 +21,11 @@ public class Arena {
     }
 
     public static Arena defaultArena() {
-        World world = Bukkit.getWorld("world");
+        World world = Bukkit.getWorld("Crimson"); // <-- changed to your world name
         if (world == null) {
-            throw new IllegalStateException("World 'world' not found!");
+            throw new IllegalStateException("World 'Crimson' not found!");
         }
-        // Change these coordinates to your actual arena
+        // Change these coordinates to your actual arena spawn points in the Crimson world
         return new Arena(world, 100, 65, 100, 110, 65, 100);
     }
 }
