@@ -18,6 +18,7 @@ public class CrimsonAshDuels extends JavaPlugin {
     private QueueManager queueManager;
     private StatsManager statsManager;
     private EloManager eloManager;
+    private ArenaResetManager arenaResetManager;
     private Map<String, Arena> arenas = new HashMap<>();
 
     @Override
@@ -36,6 +37,7 @@ public class CrimsonAshDuels extends JavaPlugin {
         queueManager = new QueueManager(matchManager, this);
         statsManager = new StatsManager(this);
         eloManager = new EloManager(this);
+        arenaResetManager = new ArenaResetManager(this);
 
         // Register commands
         getCommand("duel").setExecutor(new DuelCommand(duelManager, cooldownManager));
@@ -63,6 +65,10 @@ public class CrimsonAshDuels extends JavaPlugin {
             return true;
         });
 
+        // Arena save/restore commands
+        getCommand("savearena").setExecutor(new SaveArenaCommand(this));
+        getCommand("restorearena").setExecutor(new RestoreArenaCommand(this));
+
         // Register events
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
     }
@@ -82,3 +88,26 @@ public class CrimsonAshDuels extends JavaPlugin {
         return arenas.get(name);
     }
 
+    public List<String> getArenaNames() {
+        return new ArrayList<>(arenas.keySet());
+    }
+
+    public StatsManager getStatsManager() {
+        return statsManager;
+    }
+
+    public EloManager getEloManager() {
+        return eloManager;
+    }
+
+    public ArenaResetManager getArenaResetManager() {
+        return arenaResetManager;
+    }
+
+    @Override
+    public void onDisable() {
+        statsManager.saveStats();
+        eloManager.saveElo();
+        getLogger().info("Crimson Ash Duels disabled!");
+    }
+}
