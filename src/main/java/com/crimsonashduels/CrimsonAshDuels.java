@@ -3,6 +3,7 @@ package com.crimsonashduels;
 import com.crimsonashduels.commands.DuelCommand;
 import com.crimsonashduels.commands.DuelAcceptCommand;
 import com.crimsonashduels.commands.SpectateCommand;
+import com.crimsonashduels.commands.QueueCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,6 +16,7 @@ public class CrimsonAshDuels extends JavaPlugin {
     private MatchManager matchManager;
     private CooldownManager cooldownManager;
     private SpectatorManager spectatorManager;
+    private QueueManager queueManager;
     private Map<String, Arena> arenas = new HashMap<>();
 
     @Override
@@ -28,10 +30,12 @@ public class CrimsonAshDuels extends JavaPlugin {
         matchManager = new MatchManager();
         cooldownManager = new CooldownManager(30); // 30-second cooldown
         spectatorManager = new SpectatorManager();
+        queueManager = new QueueManager(matchManager, this);
 
         getCommand("duel").setExecutor(new DuelCommand(duelManager, cooldownManager));
         getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager, matchManager, this));
         getCommand("spectate").setExecutor(new SpectateCommand(spectatorManager));
+        getCommand("queue").setExecutor(new QueueCommand(queueManager));
 
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
     }
