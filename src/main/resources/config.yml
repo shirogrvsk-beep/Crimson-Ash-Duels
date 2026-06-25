@@ -1,0 +1,21 @@
+arenas:
+  default:
+    world: Crimson
+    spawn1:
+      x: 100
+      y: 65
+      z: 100
+    spawn2:
+      x: 110
+      y: 65
+      z: 100
+  secondarena:
+    world: Crimson
+    spawn1:
+      x: 200
+      y: 70
+      z: 200
+    spawn2:
+      x: 210
+      y: 70
+      z: 200
