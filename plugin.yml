@@ -53,5 +53,7 @@ commands:
     description: Restore an arena schematic
     usage: /restorearena <name>
     permission: crimsonashduels.admin
-
-
+  rotatearenas:
+    description: Manually trigger arena rotation and reset
+    usage: /rotatearenas
+    permission: crimsonashduels.admin
