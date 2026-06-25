@@ -1,6 +1,8 @@
 package com.crimsonashduels;
 
 import com.crimsonashduels.commands.*;
+import com.crimsonashduels.gui.KitSelectorGUI;
+import com.crimsonashduels.listeners.KitSelectorListener;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,7 +40,7 @@ public class CrimsonAshDuels extends JavaPlugin {
         kitManager = new KitManager(this);
 
         // Register duel-related commands
-        getCommand("duel").setExecutor(new DuelCommand(duelManager, cooldownManager));
+        getCommand("duel").setExecutor(new DuelCommand(this)); // now opens kit selector
         getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager, matchManager, this));
         getCommand("spectate").setExecutor(new SpectateCommand(spectatorManager));
         getCommand("queue").setExecutor(new QueueCommand(queueManager));
@@ -81,6 +83,7 @@ public class CrimsonAshDuels extends JavaPlugin {
 
         // Register events
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
+        getServer().getPluginManager().registerEvents(new KitSelectorListener(this, kitManager), this);
 
         // Schedule automatic arena rotation
         long intervalMinutes = getConfig().getLong("arena-rotation-interval-minutes", 60);
