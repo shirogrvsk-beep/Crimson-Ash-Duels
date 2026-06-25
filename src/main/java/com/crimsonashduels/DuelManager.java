@@ -1,13 +1,11 @@
 package com.crimsonashduels;
 
 import org.bukkit.entity.Player;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class DuelManager {
 
-    // Store pending duel requests: challenger -> target
     private final Map<Player, Player> pendingDuels = new HashMap<>();
 
     public void sendRequest(Player challenger, Player target) {
