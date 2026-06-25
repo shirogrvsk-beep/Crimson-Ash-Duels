@@ -4,6 +4,7 @@ import com.crimsonashduels.commands.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,6 +81,13 @@ public class CrimsonAshDuels extends JavaPlugin {
                 Arena arena = Arena.fromConfig(section.getConfigurationSection(key));
                 arenas.put(key, arena);
                 getLogger().info("Loaded arena: " + key);
+
+                // Automatically save schematic if not already present
+                File schemFile = new File(getDataFolder(), key + ".schem");
+                if (!schemFile.exists()) {
+                    getLogger().info("No schematic found for arena " + key + ", saving now...");
+                    arenaResetManager.saveArena(key, arena.getCorner1(), arena.getCorner2());
+                }
             }
         }
     }
