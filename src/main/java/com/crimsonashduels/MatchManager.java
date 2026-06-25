@@ -8,6 +8,11 @@ import java.util.Map;
 public class MatchManager {
 
     private final Map<Player, Match> activeMatches = new HashMap<>();
+    private final CrimsonAshDuels plugin;
+
+    public MatchManager(CrimsonAshDuels plugin) {
+        this.plugin = plugin;
+    }
 
     public void startMatch(Player p1, Player p2) {
         Match match = new Match(p1, p2);
@@ -25,6 +30,11 @@ public class MatchManager {
 
     public void endMatch(Match match, Player winner, Player loser) {
         match.endMatch(winner, loser);
+
+        // Record stats
+        plugin.getStatsManager().recordWin(winner);
+        plugin.getStatsManager().recordLoss(loser);
+
         activeMatches.remove(match.getPlayer1());
         activeMatches.remove(match.getPlayer2());
     }
