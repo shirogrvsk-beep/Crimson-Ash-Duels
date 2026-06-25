@@ -4,6 +4,10 @@
 # Example: 60 = every hour, 1440 = once per day
 arena-rotation-interval-minutes: 60
 
+# Rotation mode for arenas
+# Options: sequential, random
+rotation-mode: sequential
+
 # Default cooldown (seconds) between duel requests
 duel-request-cooldown: 30
 
