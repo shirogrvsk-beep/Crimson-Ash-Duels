@@ -1,38 +1,73 @@
 package com.crimsonashduels;
 
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
 public class StatsManager {
 
-    private final Map<UUID, Integer> wins = new HashMap<>();
-    private final Map<UUID, Integer> losses = new HashMap<>();
-    private final Map<UUID, Integer> duelsPlayed = new HashMap<>();
+    private final CrimsonAshDuels plugin;
+    private File statsFile;
+    private FileConfiguration statsConfig;
+
+    public StatsManager(CrimsonAshDuels plugin) {
+        this.plugin = plugin;
+        createFile();
+    }
+
+    private void createFile() {
+        statsFile = new File(plugin.getDataFolder(), "stats.yml");
+        if (!statsFile.exists()) {
+            try {
+                statsFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        statsConfig = YamlConfiguration.loadConfiguration(statsFile);
+    }
+
+    public void saveStats() {
+        try {
+            statsConfig.save(statsFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void recordWin(Player player) {
         UUID id = player.getUniqueId();
-        wins.put(id, wins.getOrDefault(id, 0) + 1);
-        duelsPlayed.put(id, duelsPlayed.getOrDefault(id, 0) + 1);
+        int wins = statsConfig.getInt(id + ".wins", 0);
+        int duels = statsConfig.getInt(id + ".duels", 0);
+
+        statsConfig.set(id + ".wins", wins + 1);
+        statsConfig.set(id + ".duels", duels + 1);
+        saveStats();
     }
 
     public void recordLoss(Player player) {
         UUID id = player.getUniqueId();
-        losses.put(id, losses.getOrDefault(id, 0) + 1);
-        duelsPlayed.put(id, duelsPlayed.getOrDefault(id, 0) + 1);
+        int losses = statsConfig.getInt(id + ".losses", 0);
+        int duels = statsConfig.getInt(id + ".duels", 0);
+
+        statsConfig.set(id + ".losses", losses + 1);
+        statsConfig.set(id + ".duels", duels + 1);
+        saveStats();
     }
 
     public int getWins(Player player) {
-        return wins.getOrDefault(player.getUniqueId(), 0);
+        return statsConfig.getInt(player.getUniqueId() + ".wins", 0);
     }
 
     public int getLosses(Player player) {
-        return losses.getOrDefault(player.getUniqueId(), 0);
+        return statsConfig.getInt(player.getUniqueId() + ".losses", 0);
     }
 
     public int getDuelsPlayed(Player player) {
-        return duelsPlayed.getOrDefault(player.getUniqueId(), 0);
+        return statsConfig.getInt(player.getUniqueId() + ".duels", 0);
     }
 }
