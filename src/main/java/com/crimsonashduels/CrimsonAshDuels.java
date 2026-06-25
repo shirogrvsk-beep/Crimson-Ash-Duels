@@ -7,7 +7,9 @@ import com.crimsonashduels.commands.QueueCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CrimsonAshDuels extends JavaPlugin {
@@ -23,20 +25,24 @@ public class CrimsonAshDuels extends JavaPlugin {
     public void onEnable() {
         getLogger().info("Crimson Ash Duels enabled!");
 
+        // Load config and arenas
         saveDefaultConfig();
         loadArenas();
 
+        // Initialize managers
         duelManager = new DuelManager();
         matchManager = new MatchManager();
         cooldownManager = new CooldownManager(30); // 30-second cooldown
         spectatorManager = new SpectatorManager();
         queueManager = new QueueManager(matchManager, this);
 
+        // Register commands
         getCommand("duel").setExecutor(new DuelCommand(duelManager, cooldownManager));
         getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager, matchManager, this));
         getCommand("spectate").setExecutor(new SpectateCommand(spectatorManager));
         getCommand("queue").setExecutor(new QueueCommand(queueManager));
 
+        // Register events
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
     }
 
@@ -53,6 +59,10 @@ public class CrimsonAshDuels extends JavaPlugin {
 
     public Arena getArena(String name) {
         return arenas.get(name);
+    }
+
+    public List<String> getArenaNames() {
+        return new ArrayList<>(arenas.keySet());
     }
 
     @Override
