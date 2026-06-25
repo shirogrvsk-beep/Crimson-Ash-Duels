@@ -1,10 +1,7 @@
-name: CrimsonAshDuels
-version: 1.0.0
-main: com.crimsonashduels.CrimsonAshDuels
-api-version: 1.21
-author: YourName
-description: A dueling plugin inspired by DonutDuels
 commands:
   duel:
     description: Challenge another player to a duel
     usage: /duel <player>
+  duelaccept:
+    description: Accept a pending duel
+    usage: /duelaccept
