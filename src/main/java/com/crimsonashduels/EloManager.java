@@ -6,7 +6,8 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class EloManager {
 
@@ -63,5 +64,17 @@ public class EloManager {
 
         winner.sendMessage("§aYour new ELO: " + newWinnerElo);
         loser.sendMessage("§cYour new ELO: " + newLoserElo);
+    }
+
+    // Leaderboard helper
+    public List<Map.Entry<String, Integer>> getTopElo(int limit) {
+        Map<String, Integer> eloMap = new HashMap<>();
+        for (String key : eloConfig.getKeys(false)) {
+            eloMap.put(key, eloConfig.getInt(key + ".elo", DEFAULT_ELO));
+        }
+        return eloMap.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .limit(limit)
+                .collect(Collectors.toList());
     }
 }
