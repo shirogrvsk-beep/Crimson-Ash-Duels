@@ -1,6 +1,7 @@
 package com.crimsonashduels.commands;
 
 import com.crimsonashduels.Arena;
+import com.crimsonashduels.CrimsonAshDuels;
 import com.crimsonashduels.DuelManager;
 import com.crimsonashduels.MatchManager;
 import org.bukkit.command.Command;
@@ -12,10 +13,12 @@ public class DuelAcceptCommand implements CommandExecutor {
 
     private final DuelManager duelManager;
     private final MatchManager matchManager;
+    private final CrimsonAshDuels plugin;
 
-    public DuelAcceptCommand(DuelManager duelManager, MatchManager matchManager) {
+    public DuelAcceptCommand(DuelManager duelManager, MatchManager matchManager, CrimsonAshDuels plugin) {
         this.duelManager = duelManager;
         this.matchManager = matchManager;
+        this.plugin = plugin;
     }
 
     @Override
@@ -38,10 +41,17 @@ public class DuelAcceptCommand implements CommandExecutor {
             return true;
         }
 
-        target.sendMessage("You accepted the duel against " + challenger.getName() + "!");
-        challenger.sendMessage(target.getName() + " accepted your duel! Teleporting to arena...");
+        // Arena selection
+        String arenaName = args.length > 0 ? args[0] : "default";
+        Arena arena = plugin.getArena(arenaName);
+        if (arena == null) {
+            target.sendMessage("Arena '" + arenaName + "' not found.");
+            return true;
+        }
 
-        Arena arena = Arena.defaultArena();
+        target.sendMessage("You accepted the duel against " + challenger.getName() + " in arena '" + arenaName + "'!");
+        challenger.sendMessage(target.getName() + " accepted your duel! Teleporting to arena '" + arenaName + "'...");
+
         arena.teleportPlayers(challenger, target);
 
         matchManager.startMatch(challenger, target);
