@@ -7,18 +7,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class CrimsonAshDuels extends JavaPlugin {
 
     private DuelManager duelManager;
+    private MatchManager matchManager;
 
     @Override
     public void onEnable() {
         getLogger().info("Crimson Ash Duels enabled!");
 
         duelManager = new DuelManager();
+        matchManager = new MatchManager();
 
         getCommand("duel").setExecutor(new DuelCommand(duelManager));
-        getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager));
+        getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager, matchManager));
 
-        // Register event listener
-        getServer().getPluginManager().registerEvents(new DuelListener(duelManager), this);
+        getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
     }
 
     @Override
