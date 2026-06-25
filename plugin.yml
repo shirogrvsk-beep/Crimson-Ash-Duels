@@ -35,3 +35,10 @@ commands:
   elo:
     description: View your current ELO rating
     usage: /elo
+  topelo:
+    description: View the top players by ELO rating
+    usage: /topelo
+  topelogui:
+    description: Open GUI leaderboard for ELO
+    usage: /topelogui
+
