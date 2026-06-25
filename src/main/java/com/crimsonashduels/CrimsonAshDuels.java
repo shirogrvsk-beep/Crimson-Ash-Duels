@@ -3,6 +3,7 @@ package com.crimsonashduels;
 import com.crimsonashduels.commands.*;
 import com.crimsonashduels.listeners.KitSelectorListener;
 import com.crimsonashduels.listeners.KitPreviewListener;
+import com.crimsonashduels.placeholders.CrimsonExpansion;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -40,7 +41,7 @@ public class CrimsonAshDuels extends JavaPlugin {
         kitManager = new KitManager(this);
 
         // Register commands
-        getCommand("duel").setExecutor(new DuelCommand(this)); // opens kit selector GUI
+        getCommand("duel").setExecutor(new DuelCommand(this));
         getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager, matchManager, this));
         getCommand("spectate").setExecutor(new SpectateCommand(spectatorManager));
         getCommand("queue").setExecutor(new QueueCommand(queueManager));
@@ -73,12 +74,18 @@ public class CrimsonAshDuels extends JavaPlugin {
             sender.sendMessage("§6Arena rotation triggered.");
             return true;
         });
-        getCommand("crimson").setExecutor(new CrimsonCommand(this, kitManager)); // admin kit commands
+        getCommand("crimson").setExecutor(new CrimsonCommand(this, kitManager));
 
         // Register events
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
         getServer().getPluginManager().registerEvents(new KitSelectorListener(this, kitManager), this);
         getServer().getPluginManager().registerEvents(new KitPreviewListener(this), this);
+
+        // Register PlaceholderAPI expansion if available
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new CrimsonExpansion(this).register();
+            getLogger().info("CrimsonAshDuels placeholders registered with PlaceholderAPI.");
+        }
 
         // Schedule automatic arena rotation
         long intervalMinutes = getConfig().getLong("arena-rotation-interval-minutes", 60);
