@@ -14,3 +14,6 @@ commands:
   spectate:
     description: Spectate a duel
     usage: /spectate <player>
+  queue:
+    description: Join or leave the duel queue
+    usage: /queue <join|leave>
