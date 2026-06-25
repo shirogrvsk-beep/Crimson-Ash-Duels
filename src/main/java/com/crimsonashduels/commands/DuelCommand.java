@@ -1,7 +1,7 @@
 package com.crimsonashduels.commands;
 
-import com.crimsonashduels.CooldownManager;
-import com.crimsonashduels.DuelManager;
+import com.crimsonashduels.CrimsonAshDuels;
+import com.crimsonashduels.gui.KitSelectorGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,12 +10,10 @@ import org.bukkit.entity.Player;
 
 public class DuelCommand implements CommandExecutor {
 
-    private final DuelManager duelManager;
-    private final CooldownManager cooldownManager;
+    private final CrimsonAshDuels plugin;
 
-    public DuelCommand(DuelManager duelManager, CooldownManager cooldownManager) {
-        this.duelManager = duelManager;
-        this.cooldownManager = cooldownManager;
+    public DuelCommand(CrimsonAshDuels plugin) {
+        this.plugin = plugin;
     }
 
     @Override
@@ -24,30 +22,22 @@ public class DuelCommand implements CommandExecutor {
             sender.sendMessage("Only players can use this command.");
             return true;
         }
-
         Player challenger = (Player) sender;
 
-        if (cooldownManager.isOnCooldown(challenger)) {
-            challenger.sendMessage("You must wait " + cooldownManager.getRemaining(challenger) + "s before sending another duel request.");
-            return true;
-        }
-
         if (args.length != 1) {
-            challenger.sendMessage("Usage: /duel <player>");
+            challenger.sendMessage("§cUsage: /duel <player>");
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            challenger.sendMessage("Player not found.");
+            challenger.sendMessage("§cPlayer not found.");
             return true;
         }
 
-        duelManager.sendRequest(challenger, target);
-        cooldownManager.setCooldown(challenger);
-
-        challenger.sendMessage("You challenged " + target.getName() + " to a duel!");
-        target.sendMessage(challenger.getName() + " has challenged you to a duel! Type /duelaccept to fight.");
+        // Open kit selector GUI before sending duel request
+        KitSelectorGUI gui = new KitSelectorGUI(plugin, plugin.getKitManager());
+        gui.openSelector(challenger, target.getName());
 
         return true;
     }
