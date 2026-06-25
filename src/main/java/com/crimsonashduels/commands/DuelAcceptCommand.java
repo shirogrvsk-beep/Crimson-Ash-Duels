@@ -1,5 +1,6 @@
 package com.crimsonashduels.commands;
 
+import com.crimsonashduels.Arena;
 import com.crimsonashduels.DuelManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,9 +36,11 @@ public class DuelAcceptCommand implements CommandExecutor {
         }
 
         target.sendMessage("You accepted the duel against " + challenger.getName() + "!");
-        challenger.sendMessage(target.getName() + " accepted your duel!");
+        challenger.sendMessage(target.getName() + " accepted your duel! Teleporting to arena...");
 
-        // TODO: Start duel logic (teleport to arena, clear inventory, etc.)
+        Arena arena = Arena.defaultArena();
+        arena.teleportPlayers(challenger, target);
+
         duelManager.removeRequest(challenger);
 
         return true;
