@@ -10,4 +10,7 @@ commands:
     usage: /duel <player>
   duelaccept:
     description: Accept a pending duel
-    usage: /duelaccept
+    usage: /duelaccept [arena]
+  spectate:
+    description: Spectate a duel
+    usage: /spectate <player>
