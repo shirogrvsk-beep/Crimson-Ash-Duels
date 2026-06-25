@@ -66,7 +66,6 @@ public class EloManager {
         loser.sendMessage("§cYour new ELO: " + newLoserElo);
     }
 
-    // Leaderboard helper
     public List<Map.Entry<String, Integer>> getTopElo(int limit) {
         Map<String, Integer> eloMap = new HashMap<>();
         for (String key : eloConfig.getKeys(false)) {
@@ -76,5 +75,14 @@ public class EloManager {
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                 .limit(limit)
                 .collect(Collectors.toList());
+    }
+
+    // Reset all ELO ratings to default
+    public void resetSeason() {
+        for (String key : eloConfig.getKeys(false)) {
+            eloConfig.set(key + ".elo", DEFAULT_ELO);
+        }
+        saveElo();
+        plugin.getLogger().info("ELO ratings have been reset for the new season!");
     }
 }
