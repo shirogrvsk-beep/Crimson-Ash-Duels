@@ -48,6 +48,8 @@ public class CrimsonAshDuels extends JavaPlugin {
         getCommand("topwinsgui").setExecutor(new TopWinsGUICommand(this));
         getCommand("topduelsgui").setExecutor(new TopDuelsGUICommand(this));
         getCommand("elo").setExecutor(new EloCommand(this));
+        getCommand("topelo").setExecutor(new TopEloCommand(this));
+        getCommand("topelogui").setExecutor(new TopEloGUICommand(this));
 
         // Register events
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
