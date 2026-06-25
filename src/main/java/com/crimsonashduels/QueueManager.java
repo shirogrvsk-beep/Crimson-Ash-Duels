@@ -1,16 +1,15 @@
 package com.crimsonashduels;
 
 import org.bukkit.entity.Player;
-
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.List;
+import java.util.Queue;
 
 public class QueueManager {
 
-    private final Queue<Player> queue = new LinkedList<>();
     private final MatchManager matchManager;
     private final CrimsonAshDuels plugin;
+    private final Queue<Player> queue = new LinkedList<>();
     private int arenaIndex = 0;
 
     public QueueManager(MatchManager matchManager, CrimsonAshDuels plugin) {
@@ -19,48 +18,39 @@ public class QueueManager {
     }
 
     public void joinQueue(Player player) {
-        if (queue.contains(player)) {
-            player.sendMessage("You are already in the duel queue.");
-            return;
-        }
-
-        queue.add(player);
-        player.sendMessage("You joined the duel queue.");
-
-        if (queue.size() >= 2) {
-            Player p1 = queue.poll();
-            Player p2 = queue.poll();
-
-            player.sendMessage("A duel has been found! " + p1.getName() + " vs " + p2.getName());
-
-            Arena arena = getNextArena();
-            arena.teleportPlayers(p1, p2);
-
-            matchManager.startMatch(p1, p2);
+        if (!queue.contains(player)) {
+            queue.add(player);
+            player.sendMessage("§aYou joined the duel queue!");
+            tryStartMatch();
         }
     }
 
     public void leaveQueue(Player player) {
-        if (queue.remove(player)) {
-            player.sendMessage("You left the duel queue.");
-        } else {
-            player.sendMessage("You are not in the duel queue.");
-        }
+        queue.remove(player);
+        player.sendMessage("§cYou left the duel queue.");
     }
 
-    public boolean isInQueue(Player player) {
-        return queue.contains(player);
+    private void tryStartMatch() {
+        if (queue.size() >= 2) {
+            Player p1 = queue.poll();
+            Player p2 = queue.poll();
+
+            Arena arena = getNextArena();
+            if (arena != null) {
+                matchManager.startMatch(p1, p2, arena);
+            } else {
+                p1.sendMessage("§cNo arenas available.");
+                p2.sendMessage("§cNo arenas available.");
+            }
+        }
     }
 
     private Arena getNextArena() {
-        List<String> arenaNames = plugin.getArenaNames();
-        if (arenaNames.isEmpty()) {
-            throw new IllegalStateException("No arenas configured!");
-        }
+        List<String> names = plugin.getArenaNames();
+        if (names.isEmpty()) return null;
 
-        String arenaName = arenaNames.get(arenaIndex);
-        arenaIndex = (arenaIndex + 1) % arenaNames.size();
-
+        String arenaName = names.get(arenaIndex);
+        arenaIndex = (arenaIndex + 1) % names.size();
         return plugin.getArena(arenaName);
     }
 }
