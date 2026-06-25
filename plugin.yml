@@ -20,3 +20,10 @@ commands:
   stats:
     description: View your duel stats
     usage: /stats
+  topwins:
+    description: View the top players by wins
+    usage: /topwins
+  topduels:
+    description: View the top players by duels played
+    usage: /topduels
+
