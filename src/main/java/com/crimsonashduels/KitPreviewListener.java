@@ -28,7 +28,10 @@ public class KitPreviewListener implements Listener {
 
             String displayName = clicked.getItemMeta().getDisplayName();
             String kitName = event.getView().getTitle().replace("Preview Kit: ", "");
-            String targetName = ""; // You’d store targetName in metadata/session when opening preview
+
+            // NOTE: You’ll want to store the target player’s name in metadata/session when opening preview
+            // For now, assume DuelManager tracks pending requests with target info
+            String targetName = plugin.getDuelManager().getPendingTarget(player);
 
             if (displayName.equalsIgnoreCase("§aConfirm Kit")) {
                 plugin.getDuelManager().sendDuelRequest(player, targetName, kitName);
@@ -36,7 +39,7 @@ public class KitPreviewListener implements Listener {
                 player.sendMessage("§aDuel request sent to " + targetName + " with kit " + kitName + ".");
             } else if (displayName.equalsIgnoreCase("§cCancel")) {
                 player.closeInventory();
-                player.sendMessage("§eKit selection cancelled. Reopen /duel to choose again.");
+                player.sendMessage("§eKit selection cancelled. Use /duel again to choose.");
             }
         }
     }
