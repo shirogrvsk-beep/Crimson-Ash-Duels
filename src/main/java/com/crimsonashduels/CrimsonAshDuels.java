@@ -16,6 +16,9 @@ public class CrimsonAshDuels extends JavaPlugin {
 
         getCommand("duel").setExecutor(new DuelCommand(duelManager));
         getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager));
+
+        // Register event listener
+        getServer().getPluginManager().registerEvents(new DuelListener(duelManager), this);
     }
 
     @Override
