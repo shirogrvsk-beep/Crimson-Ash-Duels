@@ -1,27 +1,80 @@
-private StatsManager statsManager;
+package com.crimsonashduels;
 
-@Override
-public void onEnable() {
-    getLogger().info("Crimson Ash Duels enabled!");
+import com.crimsonashduels.commands.DuelCommand;
+import com.crimsonashduels.commands.DuelAcceptCommand;
+import com.crimsonashduels.commands.SpectateCommand;
+import com.crimsonashduels.commands.QueueCommand;
+import com.crimsonashduels.commands.StatsCommand;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.java.JavaPlugin;
 
-    saveDefaultConfig();
-    loadArenas();
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    duelManager = new DuelManager();
-    matchManager = new MatchManager();
-    cooldownManager = new CooldownManager(30);
-    spectatorManager = new SpectatorManager();
-    queueManager = new QueueManager(matchManager, this);
-    statsManager = new StatsManager();
+public class CrimsonAshDuels extends JavaPlugin {
 
-    getCommand("duel").setExecutor(new DuelCommand(duelManager, cooldownManager));
-    getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager, matchManager, this));
-    getCommand("spectate").setExecutor(new SpectateCommand(spectatorManager));
-    getCommand("queue").setExecutor(new QueueCommand(queueManager));
+    private DuelManager duelManager;
+    private MatchManager matchManager;
+    private CooldownManager cooldownManager;
+    private SpectatorManager spectatorManager;
+    private QueueManager queueManager;
+    private StatsManager statsManager;
+    private Map<String, Arena> arenas = new HashMap<>();
 
-    getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
-}
+    @Override
+    public void onEnable() {
+        getLogger().info("Crimson Ash Duels enabled!");
 
-public StatsManager getStatsManager() {
-    return statsManager;
+        // Load config and arenas
+        saveDefaultConfig();
+        loadArenas();
+
+        // Initialize managers
+        duelManager = new DuelManager();
+        matchManager = new MatchManager(this); // pass plugin for stats
+        cooldownManager = new CooldownManager(30); // 30-second cooldown
+        spectatorManager = new SpectatorManager();
+        queueManager = new QueueManager(matchManager, this);
+        statsManager = new StatsManager();
+
+        // Register commands
+        getCommand("duel").setExecutor(new DuelCommand(duelManager, cooldownManager));
+        getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager, matchManager, this));
+        getCommand("spectate").setExecutor(new SpectateCommand(spectatorManager));
+        getCommand("queue").setExecutor(new QueueCommand(queueManager));
+        getCommand("stats").setExecutor(new StatsCommand(this));
+
+        // Register events
+        getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
+    }
+
+    private void loadArenas() {
+        ConfigurationSection section = getConfig().getConfigurationSection("arenas");
+        if (section != null) {
+            for (String key : section.getKeys(false)) {
+                Arena arena = Arena.fromConfig(section.getConfigurationSection(key));
+                arenas.put(key, arena);
+                getLogger().info("Loaded arena: " + key);
+            }
+        }
+    }
+
+    public Arena getArena(String name) {
+        return arenas.get(name);
+    }
+
+    public List<String> getArenaNames() {
+        return new ArrayList<>(arenas.keySet());
+    }
+
+    public StatsManager getStatsManager() {
+        return statsManager;
+    }
+
+    @Override
+    public void onDisable() {
+        getLogger().info("Crimson Ash Duels disabled!");
+    }
 }
