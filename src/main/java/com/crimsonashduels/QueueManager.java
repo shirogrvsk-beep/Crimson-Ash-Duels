@@ -4,12 +4,14 @@ import org.bukkit.entity.Player;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.List;
 
 public class QueueManager {
 
     private final Queue<Player> queue = new LinkedList<>();
     private final MatchManager matchManager;
     private final CrimsonAshDuels plugin;
+    private int arenaIndex = 0;
 
     public QueueManager(MatchManager matchManager, CrimsonAshDuels plugin) {
         this.matchManager = matchManager;
@@ -31,7 +33,7 @@ public class QueueManager {
 
             player.sendMessage("A duel has been found! " + p1.getName() + " vs " + p2.getName());
 
-            Arena arena = plugin.getArena("default"); // pick default arena for now
+            Arena arena = getNextArena();
             arena.teleportPlayers(p1, p2);
 
             matchManager.startMatch(p1, p2);
@@ -48,5 +50,17 @@ public class QueueManager {
 
     public boolean isInQueue(Player player) {
         return queue.contains(player);
+    }
+
+    private Arena getNextArena() {
+        List<String> arenaNames = plugin.getArenaNames();
+        if (arenaNames.isEmpty()) {
+            throw new IllegalStateException("No arenas configured!");
+        }
+
+        String arenaName = arenaNames.get(arenaIndex);
+        arenaIndex = (arenaIndex + 1) % arenaNames.size();
+
+        return plugin.getArena(arenaName);
     }
 }
