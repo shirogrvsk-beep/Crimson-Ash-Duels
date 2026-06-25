@@ -6,7 +6,7 @@ author: DaxterKidPH
 description: A dueling plugin inspired by DonutDuels
 commands:
   duel:
-    description: Challenge another player to a duel
+    description: Challenge another player to a duel (opens kit selector GUI)
     usage: /duel <player>
   duelaccept:
     description: Accept a pending duel
