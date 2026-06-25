@@ -1,14 +1,21 @@
 package com.crimsonashduels;
 
 import com.crimsonashduels.commands.DuelCommand;
+import com.crimsonashduels.commands.DuelAcceptCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CrimsonAshDuels extends JavaPlugin {
 
+    private DuelManager duelManager;
+
     @Override
     public void onEnable() {
         getLogger().info("Crimson Ash Duels enabled!");
-        getCommand("duel").setExecutor(new DuelCommand());
+
+        duelManager = new DuelManager();
+
+        getCommand("duel").setExecutor(new DuelCommand(duelManager));
+        getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager));
     }
 
     @Override
