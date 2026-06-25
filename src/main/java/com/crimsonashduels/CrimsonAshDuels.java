@@ -5,10 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CrimsonAshDuels extends JavaPlugin {
 
@@ -26,11 +23,9 @@ public class CrimsonAshDuels extends JavaPlugin {
     public void onEnable() {
         getLogger().info("Crimson Ash Duels enabled!");
 
-        // Load config and arenas
         saveDefaultConfig();
         loadArenas();
 
-        // Initialize managers
         duelManager = new DuelManager();
         matchManager = new MatchManager(this);
         cooldownManager = new CooldownManager(30);
@@ -53,8 +48,6 @@ public class CrimsonAshDuels extends JavaPlugin {
         getCommand("elo").setExecutor(new EloCommand(this));
         getCommand("topelo").setExecutor(new TopEloCommand(this));
         getCommand("topelogui").setExecutor(new TopEloGUICommand(this));
-
-        // Season reset command
         getCommand("resetseason").setExecutor((sender, command, label, args) -> {
             if (!sender.hasPermission("crimsonashduels.admin")) {
                 sender.sendMessage("§cYou do not have permission to reset the season.");
@@ -65,13 +58,27 @@ public class CrimsonAshDuels extends JavaPlugin {
             sender.sendMessage("§6Season has been reset! All stats and ELO cleared.");
             return true;
         });
-
-        // Arena save/restore commands
         getCommand("savearena").setExecutor(new SaveArenaCommand(this));
         getCommand("restorearena").setExecutor(new RestoreArenaCommand(this));
+        getCommand("rotatearenas").setExecutor((sender, command, label, args) -> {
+            if (!sender.hasPermission("crimsonashduels.admin")) {
+                sender.sendMessage("§cYou do not have permission to rotate arenas.");
+                return true;
+            }
+            rotateArenas();
+            sender.sendMessage("§6Arena rotation triggered.");
+            return true;
+        });
 
         // Register events
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
+
+        // Schedule automatic arena rotation
+        long intervalMinutes = getConfig().getLong("arena-rotation-interval-minutes", 60);
+        getServer().getScheduler().runTaskTimer(this,
+            this::rotateArenas,
+            20L * 60 * intervalMinutes,
+            20L * 60 * intervalMinutes);
     }
 
     private void loadArenas() {
@@ -82,13 +89,20 @@ public class CrimsonAshDuels extends JavaPlugin {
                 arenas.put(key, arena);
                 getLogger().info("Loaded arena: " + key);
 
-                // Automatically save schematic if not already present
                 File schemFile = new File(getDataFolder(), key + ".schem");
                 if (!schemFile.exists()) {
                     getLogger().info("No schematic found for arena " + key + ", saving now...");
                     arenaResetManager.saveArena(key, arena.getCorner1(), arena.getCorner2());
                 }
             }
+        }
+    }
+
+    public void rotateArenas() {
+        getLogger().info("Arena rotation triggered.");
+        for (String arenaName : getArenaNames()) {
+            Arena arena = getArena(arenaName);
+            arenaResetManager.restoreArena(arenaName, arena.getPasteLocation());
         }
     }
 
