@@ -41,4 +41,17 @@ commands:
   topelogui:
     description: Open GUI leaderboard for ELO
     usage: /topelogui
+  resetseason:
+    description: Reset all stats and ELO for a new season
+    usage: /resetseason
+    permission: crimsonashduels.admin
+  savearena:
+    description: Save an arena schematic
+    usage: /savearena <name>
+    permission: crimsonashduels.admin
+  restorearena:
+    description: Restore an arena schematic
+    usage: /restorearena <name>
+    permission: crimsonashduels.admin
+
 
