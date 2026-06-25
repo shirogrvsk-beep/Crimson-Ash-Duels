@@ -14,7 +14,7 @@ public class SaveArenaCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        sender.sendMessage("Arena save not yet implemented.");
+        sender.sendMessage("Arena save not implemented yet.");
         return true;
     }
 }
