@@ -6,7 +6,8 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StatsManager {
 
@@ -69,5 +70,28 @@ public class StatsManager {
 
     public int getDuelsPlayed(Player player) {
         return statsConfig.getInt(player.getUniqueId() + ".duels", 0);
+    }
+
+    // Leaderboard helpers
+    public List<Map.Entry<String, Integer>> getTopWins(int limit) {
+        Map<String, Integer> winsMap = new HashMap<>();
+        for (String key : statsConfig.getKeys(false)) {
+            winsMap.put(key, statsConfig.getInt(key + ".wins", 0));
+        }
+        return winsMap.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
+
+    public List<Map.Entry<String, Integer>> getTopDuels(int limit) {
+        Map<String, Integer> duelsMap = new HashMap<>();
+        for (String key : statsConfig.getKeys(false)) {
+            duelsMap.put(key, statsConfig.getInt(key + ".duels", 0));
+        }
+        return duelsMap.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .limit(limit)
+                .collect(Collectors.toList());
     }
 }
