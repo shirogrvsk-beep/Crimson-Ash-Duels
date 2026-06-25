@@ -17,3 +17,6 @@ commands:
   queue:
     description: Join or leave the duel queue
     usage: /queue <join|leave>
+  stats:
+    description: View your duel stats
+    usage: /stats
