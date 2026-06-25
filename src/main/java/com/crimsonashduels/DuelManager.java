@@ -1,31 +1,22 @@
 package com.crimsonashduels;
 
 import org.bukkit.entity.Player;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DuelManager {
+    private final Map<Player, String> pendingTargets = new HashMap<>();
+    private final Map<Player, String> lastKit = new HashMap<>();
 
-    private final Map<Player, Player> pendingDuels = new HashMap<>();
-
-    public void sendRequest(Player challenger, Player target) {
-        pendingDuels.put(challenger, target);
+    public void sendDuelRequest(Player sender, String targetName, String kitName) {
+        pendingTargets.put(sender, targetName);
+        lastKit.put(sender, kitName);
     }
 
-    public boolean hasRequest(Player target) {
-        return pendingDuels.containsValue(target);
+    public String getPendingTarget(Player player) {
+        return pendingTargets.get(player);
     }
 
-    public Player getChallenger(Player target) {
-        for (Map.Entry<Player, Player> entry : pendingDuels.entrySet()) {
-            if (entry.getValue().equals(target)) {
-                return entry.getKey();
-            }
-        }
-        return null;
-    }
-
-    public void removeRequest(Player challenger) {
-        pendingDuels.remove(challenger);
+    public String getLastKit(Player player) {
+        return lastKit.getOrDefault(player, "None");
     }
 }
