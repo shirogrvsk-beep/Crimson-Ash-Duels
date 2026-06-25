@@ -1,14 +1,6 @@
 package com.crimsonashduels;
 
-import com.crimsonashduels.commands.DuelCommand;
-import com.crimsonashduels.commands.DuelAcceptCommand;
-import com.crimsonashduels.commands.SpectateCommand;
-import com.crimsonashduels.commands.QueueCommand;
-import com.crimsonashduels.commands.StatsCommand;
-import com.crimsonashduels.commands.TopWinsCommand;
-import com.crimsonashduels.commands.TopDuelsCommand;
-import com.crimsonashduels.commands.TopWinsGUICommand;
-import com.crimsonashduels.commands.TopDuelsGUICommand;
+import com.crimsonashduels.commands.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,6 +17,7 @@ public class CrimsonAshDuels extends JavaPlugin {
     private SpectatorManager spectatorManager;
     private QueueManager queueManager;
     private StatsManager statsManager;
+    private EloManager eloManager;
     private Map<String, Arena> arenas = new HashMap<>();
 
     @Override
@@ -37,11 +30,12 @@ public class CrimsonAshDuels extends JavaPlugin {
 
         // Initialize managers
         duelManager = new DuelManager();
-        matchManager = new MatchManager(this); // pass plugin for stats
-        cooldownManager = new CooldownManager(30); // 30-second cooldown
+        matchManager = new MatchManager(this);
+        cooldownManager = new CooldownManager(30);
         spectatorManager = new SpectatorManager();
         queueManager = new QueueManager(matchManager, this);
-        statsManager = new StatsManager(this); // persistent stats
+        statsManager = new StatsManager(this);
+        eloManager = new EloManager(this);
 
         // Register commands
         getCommand("duel").setExecutor(new DuelCommand(duelManager, cooldownManager));
@@ -53,6 +47,7 @@ public class CrimsonAshDuels extends JavaPlugin {
         getCommand("topduels").setExecutor(new TopDuelsCommand(this));
         getCommand("topwinsgui").setExecutor(new TopWinsGUICommand(this));
         getCommand("topduelsgui").setExecutor(new TopDuelsGUICommand(this));
+        getCommand("elo").setExecutor(new EloCommand(this));
 
         // Register events
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
@@ -81,10 +76,14 @@ public class CrimsonAshDuels extends JavaPlugin {
         return statsManager;
     }
 
+    public EloManager getEloManager() {
+        return eloManager;
+    }
+
     @Override
     public void onDisable() {
-        // Save stats before shutdown
         statsManager.saveStats();
+        eloManager.saveElo();
         getLogger().info("Crimson Ash Duels disabled!");
     }
 }
