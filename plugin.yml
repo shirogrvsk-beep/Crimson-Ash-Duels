@@ -26,4 +26,9 @@ commands:
   topduels:
     description: View the top players by duels played
     usage: /topduels
-
+  topwinsgui:
+    description: Open GUI leaderboard for wins
+    usage: /topwinsgui
+  topduelsgui:
+    description: Open GUI leaderboard for duels
+    usage: /topduelsgui
