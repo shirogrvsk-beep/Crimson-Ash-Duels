@@ -12,6 +12,7 @@ public class CrimsonAshDuels extends JavaPlugin {
 
     private DuelManager duelManager;
     private MatchManager matchManager;
+    private CooldownManager cooldownManager;
     private Map<String, Arena> arenas = new HashMap<>();
 
     @Override
@@ -23,8 +24,9 @@ public class CrimsonAshDuels extends JavaPlugin {
 
         duelManager = new DuelManager();
         matchManager = new MatchManager();
+        cooldownManager = new CooldownManager(30); // 30-second cooldown
 
-        getCommand("duel").setExecutor(new DuelCommand(duelManager));
+        getCommand("duel").setExecutor(new DuelCommand(duelManager, cooldownManager));
         getCommand("duelaccept").setExecutor(new DuelAcceptCommand(duelManager, matchManager, this));
 
         getServer().getPluginManager().registerEvents(new DuelListener(matchManager), this);
