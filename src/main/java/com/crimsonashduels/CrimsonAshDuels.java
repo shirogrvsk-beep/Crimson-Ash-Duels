@@ -37,7 +37,7 @@ public class CrimsonAshDuels extends JavaPlugin {
         cooldownManager = new CooldownManager(30); // 30-second cooldown
         spectatorManager = new SpectatorManager();
         queueManager = new QueueManager(matchManager, this);
-        statsManager = new StatsManager();
+        statsManager = new StatsManager(this); // persistent stats
 
         // Register commands
         getCommand("duel").setExecutor(new DuelCommand(duelManager, cooldownManager));
@@ -75,6 +75,8 @@ public class CrimsonAshDuels extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // Save stats before shutdown
+        statsManager.saveStats();
         getLogger().info("Crimson Ash Duels disabled!");
     }
 }
