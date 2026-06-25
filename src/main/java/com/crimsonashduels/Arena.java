@@ -3,6 +3,7 @@ package com.crimsonashduels;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 public class Arena {
@@ -20,12 +21,21 @@ public class Arena {
         p2.teleport(spawn2);
     }
 
-    public static Arena defaultArena() {
-        World world = Bukkit.getWorld("Crimson"); // <-- changed to your world name
+    public static Arena fromConfig(ConfigurationSection section) {
+        String worldName = section.getString("world");
+        World world = Bukkit.getWorld(worldName);
         if (world == null) {
-            throw new IllegalStateException("World 'Crimson' not found!");
+            throw new IllegalStateException("World '" + worldName + "' not found!");
         }
-        // Change these coordinates to your actual arena spawn points in the Crimson world
-        return new Arena(world, 100, 65, 100, 110, 65, 100);
+
+        double x1 = section.getConfigurationSection("spawn1").getDouble("x");
+        double y1 = section.getConfigurationSection("spawn1").getDouble("y");
+        double z1 = section.getConfigurationSection("spawn1").getDouble("z");
+
+        double x2 = section.getConfigurationSection("spawn2").getDouble("x");
+        double y2 = section.getConfigurationSection("spawn2").getDouble("y");
+        double z2 = section.getConfigurationSection("spawn2").getDouble("z");
+
+        return new Arena(world, x1, y1, z1, x2, y2, z2);
     }
 }
